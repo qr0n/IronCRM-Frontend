@@ -16,6 +16,7 @@ import {
   PencilIcon,
   CheckIcon
 } from '@heroicons/react/24/outline';
+import { PermissionGuard } from '@/hooks/usePermissions';
 
 interface Property {
   id: number;
@@ -419,5 +420,13 @@ export default function PropertyProgressPage() {
         />
       )}
     </div>
+  );
+}
+
+export function PropertyDetailPage() {
+  return (
+    <PermissionGuard allowedRoles={['AGENT', 'MANAGER', 'ADMIN']}>
+      <PropertyProgressPage />
+    </PermissionGuard>
   );
 }

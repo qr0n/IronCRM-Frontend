@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Note {
   id: number;
   title: string;
   content: string;
+  created_by: number;
   created_by_name: string;
   created_at: string;
   updated_at: string;
@@ -22,6 +24,7 @@ interface NotesComponentProps {
 }
 
 export default function NotesComponent({ objectType, objectId, modelName, appLabel }: NotesComponentProps) {
+  const { user: currentUser } = useAuth();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -197,12 +200,16 @@ export default function NotesComponent({ objectType, objectId, modelName, appLab
                     )}
                   </div>
                 </div>
-                <button
-                  onClick={() => handleDeleteNote(note.id)}
-                  className="text-red-500 hover:text-red-700 text-sm ml-4 transition-colors"
-                >
-                  Delete
-                </button>
+                {/* Only show delete button if user owns the note or is manager/admin */}
+                {(currentUser && (note.created_by === currentUser.id || 
+                  ['MANAGER', 'ADMIN'].includes(currentUser.role))) && (
+                  <button
+                    onClick={() => handleDeleteNote(note.id)}
+                    className="text-red-500 hover:text-red-700 text-sm ml-4 transition-colors"
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
           ))

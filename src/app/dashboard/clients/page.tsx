@@ -14,6 +14,8 @@ import {
   EnvelopeIcon,
   DocumentTextIcon
 } from '@heroicons/react/24/outline';
+import { PermissionGuard } from '@/hooks/usePermissions';
+import { RoleBasedDeleteButton } from '@/components/common/RoleBasedDeleteButton';
 
 interface Client {
   id: number;
@@ -51,6 +53,14 @@ interface BudgetTier {
 }
 
 export default function ClientsPage() {
+  return (
+    <PermissionGuard allowedRoles={['AGENT', 'MANAGER', 'ADMIN']}>
+      <ClientsContent />
+    </PermissionGuard>
+  );
+}
+
+function ClientsContent() {
   const [clients, setClients] = useState<Client[]>([]);
   const [filteredClients, setFilteredClients] = useState<Client[]>([]);
   const [parishes, setParishes] = useState<Parish[]>([]);
@@ -285,13 +295,11 @@ export default function ClientsPage() {
                       >
                         <PencilIcon className="h-4 w-4" />
                       </button>
-                      <button 
-                        onClick={() => handleDeleteClient(client.id)}
-                        className="text-red-600 hover:text-red-800 p-1 hover:bg-red-50 rounded transition-colors"
+                      <RoleBasedDeleteButton
+                        onDelete={() => handleDeleteClient(client.id)}
+                        allowedRoles={['MANAGER', 'ADMIN']}
                         title="Delete client"
-                      >
-                        <TrashIcon className="h-4 w-4" />
-                      </button>
+                      />
                     </div>
                   </td>
                 </tr>

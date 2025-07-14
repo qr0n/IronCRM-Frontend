@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { PermissionGuard } from '@/hooks/usePermissions';
 
 interface DashboardStats {
   totalProperties: number;
@@ -46,6 +47,14 @@ interface UpcomingViewing {
 }
 
 export default function DashboardPage() {
+  return (
+    <PermissionGuard allowedRoles={['AGENT', 'MANAGER', 'ADMIN']}>
+      <DashboardContent />
+    </PermissionGuard>
+  );
+}
+
+function DashboardContent() {
   const router = useRouter();
   const { user: currentUser } = useAuth();
   const [stats, setStats] = useState<DashboardStats>({

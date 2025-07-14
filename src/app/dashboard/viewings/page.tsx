@@ -16,6 +16,7 @@ import {
   CheckIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
+import { PermissionGuard } from '@/hooks/usePermissions';
 
 interface Viewing {
   id: number;
@@ -39,6 +40,14 @@ interface Agent {
 }
 
 export default function ViewingsPage() {
+  return (
+    <PermissionGuard allowedRoles={['AGENT', 'MANAGER', 'ADMIN']}>
+      <ViewingsContent />
+    </PermissionGuard>
+  );
+}
+
+function ViewingsContent() {
   const [viewings, setViewings] = useState<Viewing[]>([]);
   const [filteredViewings, setFilteredViewings] = useState<Viewing[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);

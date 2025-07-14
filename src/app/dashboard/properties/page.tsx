@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { NewPropertyModal } from '@/components/forms/NewPropertyModal';
 import { PropertySearchBar } from '@/components/search/PropertySearchBar';
 import { PlusIcon } from '@heroicons/react/24/outline';
+import { PermissionGuard } from '@/hooks/usePermissions';
 
 interface Property {
   id: number;
@@ -36,6 +37,14 @@ interface PropertySearchParams {
 }
 
 export default function PropertiesPage() {
+  return (
+    <PermissionGuard allowedRoles={['AGENT', 'MANAGER', 'ADMIN']}>
+      <PropertiesContent />
+    </PermissionGuard>
+  );
+}
+
+function PropertiesContent() {
   const router = useRouter();
   const [properties, setProperties] = useState<Property[]>([]);
   const [parishes, setParishes] = useState<Parish[]>([]);

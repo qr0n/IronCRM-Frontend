@@ -1,0 +1,7 @@
+node_modules
+.next
+*.jpg
+*.png
+*.dev
+.env.local
+.env

@@ -43,15 +43,38 @@ export default function PropertiesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    fetchProperties();
-    fetchParishes();
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        // Load both in parallel but wait for properties to finish loading state
+        await Promise.all([
+          fetchPropertiesOnly(),
+          fetchParishes()
+        ]);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
   }, []);
+
+  const fetchPropertiesOnly = async (searchParams?: PropertySearchParams) => {
+    try {
+      const response = await api.get('/properties/listings/', { params: searchParams });
+      setProperties(response.data.results || response.data);
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+      setProperties([]);
+    }
+  };
 
   const fetchProperties = async (searchParams?: PropertySearchParams) => {
     try {
       setLoading(true);
-      const response = await api.get('/properties/listings/', { params: searchParams });
-      setProperties(response.data.results || response.data);
+      await fetchPropertiesOnly(searchParams);
     } catch (error) {
       console.error('Error fetching properties:', error);
     } finally {

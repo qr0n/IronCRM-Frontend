@@ -31,14 +31,17 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="mx-auto h-12 w-12 bg-primary-600 rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold text-xl">RE</span>
+        <div className="mx-auto h-16 w-16 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
+          <span className="text-white font-bold text-2xl">IR</span>
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Real Estate CRM
+          IronCRM
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Sign in to your account
+          Professional Real Estate Management Platform
+        </p>
+        <p className="mt-1 text-center text-xs text-gray-500">
+          Sign in to your account to continue
         </p>
       </div>
 
@@ -97,7 +100,24 @@ export default function LoginPage() {
               </button>
             </div>
           </form>
+          
+          <div className="mt-6 text-center">
+            <p className="text-xs text-gray-500">
+              Secure real estate management platform
+            </p>
+            <div className="flex justify-center space-x-4 mt-2 text-xs text-gray-400">
+              <span>🔒 SSL Protected</span>
+              <span>📊 Analytics Ready</span>
+              <span>☁️ Cloud Sync</span>
+            </div>
+          </div>
         </div>
+      </div>
+      
+      <div className="text-center mt-8">
+        <p className="text-xs text-gray-400">
+          © 2025 IronCRM. Professional Real Estate Management Platform.
+        </p>
       </div>
     </div>
   );

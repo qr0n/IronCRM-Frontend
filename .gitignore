@@ -1,6 +1,7 @@
 node_modules
 .next
 *.jpg
+*.jpeg
 *.png
 *.dev
 .env.local

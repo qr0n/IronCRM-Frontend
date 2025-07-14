@@ -55,19 +55,42 @@ export default function ViewingsPage() {
   });
 
   useEffect(() => {
-    fetchViewings();
-    fetchAgents();
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        // Load both in parallel but wait for both to finish before setting loading false
+        await Promise.all([
+          fetchViewingsOnly(),
+          fetchAgents()
+        ]);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
   }, []);
 
   useEffect(() => {
     filterViewings();
   }, [viewings, searchQuery, filters]);
 
+  const fetchViewingsOnly = async () => {
+    try {
+      const response = await api.get('/viewings/');
+      setViewings(response.data);
+    } catch (error) {
+      console.error('Error fetching viewings:', error);
+      setViewings([]);
+    }
+  };
+
   const fetchViewings = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/viewings/');
-      setViewings(response.data);
+      await fetchViewingsOnly();
     } catch (error) {
       console.error('Error fetching viewings:', error);
     } finally {

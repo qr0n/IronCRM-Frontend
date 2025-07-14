@@ -67,12 +67,22 @@ export default function ClientsPage() {
     fetchClients(params);
   };
 
+  const fetchClientsOnly = async (searchParams?: ClientSearchParams) => {
+    try {
+      const response = await api.get('/clients/', { params: searchParams });
+      setClients(response.data);
+      setFilteredClients(response.data);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+      setClients([]);
+      setFilteredClients([]);
+    }
+  };
+
   const fetchClients = async (searchParams?: ClientSearchParams) => {
     try {
       setLoading(true);
-      const response = await api.get('/clients/', { params: searchParams });
-      setClients(response.data);
-      setFilteredClients(response.data); // Set filtered clients directly from backend
+      await fetchClientsOnly(searchParams);
     } catch (error) {
       console.error('Error fetching clients:', error);
     } finally {
@@ -120,9 +130,23 @@ export default function ClientsPage() {
   };
 
   useEffect(() => {
-    fetchClients();
-    fetchParishes();
-    fetchBudgetTiers();
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        // Load all data in parallel
+        await Promise.all([
+          fetchClientsOnly(),
+          fetchParishes(),
+          fetchBudgetTiers()
+        ]);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
   }, []);
 
   if (loading) {

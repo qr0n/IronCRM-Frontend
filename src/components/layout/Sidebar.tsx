@@ -13,16 +13,46 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-  { name: 'Properties', href: '/dashboard/properties', icon: BuildingOfficeIcon },
-  { name: 'Clients', href: '/dashboard/clients', icon: UsersIcon },
-  { name: 'Viewings', href: '/dashboard/viewings', icon: CalendarIcon },
-  { name: 'Settings', href: '/dashboard/settings', icon: Cog6ToothIcon },
+  { 
+    name: 'Dashboard', 
+    href: '/dashboard', 
+    icon: HomeIcon,
+    roles: ['AGENT', 'MANAGER', 'ADMIN'] // All roles can access dashboard
+  },
+  { 
+    name: 'Properties', 
+    href: '/dashboard/properties', 
+    icon: BuildingOfficeIcon,
+    roles: ['AGENT', 'MANAGER', 'ADMIN'] // All roles can access properties
+  },
+  { 
+    name: 'Clients', 
+    href: '/dashboard/clients', 
+    icon: UsersIcon,
+    roles: ['AGENT', 'MANAGER', 'ADMIN'] // All roles can access clients
+  },
+  { 
+    name: 'Viewings', 
+    href: '/dashboard/viewings', 
+    icon: CalendarIcon,
+    roles: ['AGENT', 'MANAGER', 'ADMIN'] // All roles can access viewings
+  },
+  { 
+    name: 'Settings', 
+    href: '/dashboard/settings', 
+    icon: Cog6ToothIcon,
+    roles: ['MANAGER', 'ADMIN'] // Only managers and admins can access settings
+  },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   const { logout, user } = useAuth();
+
+  // Filter navigation items based on user role
+  const allowedNavigation = navigation.filter(item => 
+    user?.role && item.roles.includes(user.role)
+  );
 
   return (
     <div className="hidden md:flex md:w-64 md:flex-col">
@@ -39,7 +69,7 @@ export function Sidebar() {
         
         <div className="flex-1 flex flex-col">
           <nav className="flex-1 px-2 space-y-2">
-            {navigation.map((item) => {
+            {allowedNavigation.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link

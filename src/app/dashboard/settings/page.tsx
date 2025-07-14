@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import { EditUserModal } from '@/components/forms/EditUserModal';
+import { PermissionGuard } from '@/hooks/usePermissions';
 import { 
   CogIcon,
   MapPinIcon,
@@ -43,7 +44,16 @@ interface User {
 }
 
 export default function SettingsPage() {
+  return (
+    <PermissionGuard allowedRoles={['MANAGER', 'ADMIN']}>
+      <SettingsContent />
+    </PermissionGuard>
+  );
+}
+
+function SettingsContent() {
   const { user: currentUser } = useAuth();
+  
   const [activeTab, setActiveTab] = useState('system');
   const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
   const [parishes, setParishes] = useState<Parish[]>([]);

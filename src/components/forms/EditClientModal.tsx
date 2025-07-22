@@ -9,7 +9,7 @@ interface Client {
   client_name: string;
   email: string;
   phone_number: string;
-  area_of_interest_parish: number;
+  areas_of_interest: number[]; // Changed to array
   area_of_interest_towns: string;
   budget_tier: number;
   mode_of_purchase: string;
@@ -47,7 +47,7 @@ export function EditClientModal({
     client_name: '',
     email: '',
     phone_number: '',
-    area_of_interest_parish: '',
+    areas_of_interest: [] as number[], // Changed to array
     area_of_interest_towns: '',
     budget_tier: '',
     mode_of_purchase: '',
@@ -62,7 +62,7 @@ export function EditClientModal({
         client_name: client.client_name || '',
         email: client.email || '',
         phone_number: client.phone_number || '',
-        area_of_interest_parish: client.area_of_interest_parish?.toString() || '',
+        areas_of_interest: client.areas_of_interest || [], // Initialize as array
         area_of_interest_towns: client.area_of_interest_towns || '',
         budget_tier: client.budget_tier?.toString() || '',
         mode_of_purchase: client.mode_of_purchase || '',
@@ -80,7 +80,7 @@ export function EditClientModal({
     try {
       const data = {
         ...formData,
-        area_of_interest_parish: formData.area_of_interest_parish ? parseInt(formData.area_of_interest_parish) : null,
+        areas_of_interest: formData.areas_of_interest, // Send as array
         budget_tier: formData.budget_tier ? parseInt(formData.budget_tier) : null,
         email: formData.email || null,
         phone_number: formData.phone_number || '',
@@ -102,6 +102,23 @@ export function EditClientModal({
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+    }));
+  };
+
+  // Helper functions for multi-parish selection
+  const addParish = (parishId: number) => {
+    if (parishId && !formData.areas_of_interest.includes(parishId)) {
+      setFormData(prev => ({
+        ...prev,
+        areas_of_interest: [...prev.areas_of_interest, parishId]
+      }));
+    }
+  };
+
+  const removeParish = (parishId: number) => {
+    setFormData(prev => ({
+      ...prev,
+      areas_of_interest: prev.areas_of_interest.filter(id => id !== parishId)
     }));
   };
 
@@ -174,22 +191,46 @@ export function EditClientModal({
           </div>
 
           <div>
-            <label htmlFor="area_of_interest_parish" className="block text-sm font-medium text-gray-700 mb-1">
-              Area of Interest (Parish)
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Areas of Interest - Parishes
             </label>
+            
+            {/* Selected Parish Tags */}
+            {formData.areas_of_interest.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {formData.areas_of_interest.map(parishId => {
+                  const parish = parishes.find(p => p.id === parishId);
+                  return parish ? (
+                    <span
+                      key={parishId}
+                      className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+                    >
+                      {parish.name}
+                      <button
+                        type="button"
+                        onClick={() => removeParish(parishId)}
+                        className="ml-2 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ) : null;
+                })}
+              </div>
+            )}
+            
+            {/* Parish Dropdown */}
             <select
-              id="area_of_interest_parish"
-              name="area_of_interest_parish"
-              value={formData.area_of_interest_parish}
-              onChange={handleChange}
+              value=""
+              onChange={(e) => addParish(parseInt(e.target.value))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select Parish</option>
-              {parishes.map(parish => (
-                <option key={parish.id} value={parish.id}>
-                  {parish.name}
-                </option>
-              ))}
+              <option value="">Select Parish to Add</option>
+              {parishes
+                .filter(parish => !formData.areas_of_interest.includes(parish.id))
+                .map(parish => (
+                  <option key={parish.id} value={parish.id}>{parish.name}</option>
+                ))}
             </select>
           </div>
 

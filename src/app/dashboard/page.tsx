@@ -95,28 +95,13 @@ function DashboardContent() {
         ).length || 0,
       });
 
-      // Fetch commission stats separately with error handling
-      // 🔐 SECURITY FIX: Only managers and admins should access commission stats
-      if (currentUser?.role && ['MANAGER', 'ADMIN'].includes(currentUser.role)) {
-        try {
-          const commissions = await api.get('/properties/listings/commission_stats/');
-          setCommissionStats(commissions.data);
-        } catch (commissionError) {
-          console.error('Error fetching commission stats:', commissionError);
-          // Set default commission stats
-          setCommissionStats({
-            total_sales_count: 0,
-            total_sales_value: 0,
-            total_company_commission: 0,
-            total_agent_commission: 0,
-            commission_percentage: 5,
-            agent_split_percentage: 55,
-            agent_percentage_of_sale: 2.75,
-            recent_sales: []
-          });
-        }
-      } else {
-        // For agents: Don't fetch commission stats, set limited default
+      // Fetch commission stats - backend handles role-based access
+      try {
+        const commissions = await api.get('/properties/listings/commission_stats/');
+        setCommissionStats(commissions.data);
+      } catch (commissionError) {
+        console.error('Error fetching commission stats:', commissionError);
+        // Set default commission stats
         setCommissionStats({
           total_sales_count: 0,
           total_sales_value: 0,

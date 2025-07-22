@@ -34,6 +34,9 @@ interface PropertyFormData {
   street_address: string;
   town: string;
   parish: number | '';
+  property_type: string;
+  bedrooms: string;
+  bathrooms: string;
   listing_price: string;
   rental_price: string;
   seller_client: number | '';
@@ -48,6 +51,9 @@ export function NewPropertyModal({ isOpen, onClose, onSuccess, parishes }: NewPr
     street_address: '',
     town: '',
     parish: '',
+    property_type: '',
+    bedrooms: '',
+    bathrooms: '',
     listing_price: '',
     rental_price: '',
     seller_client: '',
@@ -178,6 +184,17 @@ export function NewPropertyModal({ isOpen, onClose, onSuccess, parishes }: NewPr
       formDataToSubmit.append('town', formData.town);
       formDataToSubmit.append('parish', formData.parish.toString());
       
+      // Add new property characteristics
+      if (formData.property_type) {
+        formDataToSubmit.append('property_type', formData.property_type);
+      }
+      if (formData.bedrooms) {
+        formDataToSubmit.append('bedrooms', formData.bedrooms);
+      }
+      if (formData.bathrooms) {
+        formDataToSubmit.append('bathrooms', formData.bathrooms);
+      }
+      
       if (formData.seller_client) {
         formDataToSubmit.append('seller_client', formData.seller_client.toString());
       }
@@ -249,6 +266,9 @@ export function NewPropertyModal({ isOpen, onClose, onSuccess, parishes }: NewPr
       street_address: '',
       town: '',
       parish: '',
+      property_type: '',
+      bedrooms: '',
+      bathrooms: '',
       listing_price: '',
       rental_price: '',
       seller_client: '',
@@ -357,6 +377,93 @@ export function NewPropertyModal({ isOpen, onClose, onSuccess, parishes }: NewPr
             {errors.parish && (
               <p className="text-red-500 text-sm mt-1">{errors.parish}</p>
             )}
+          </div>
+
+          {/* Property Characteristics */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Property Type
+              </label>
+              <select
+                name="property_type"
+                value={formData.property_type}
+                onChange={handleInputChange}
+                className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                  errors.property_type ? 'border-red-300' : 'border-gray-300'
+                }`}
+              >
+                <option value="">Select Property Type</option>
+                <option value="APARTMENT">Apartment</option>
+                <option value="HOUSE">House</option>
+                <option value="TOWNHOUSE">Townhouse</option>
+                <option value="STUDIO_APT">Studio Apt</option>
+                <option value="COMMERCIAL_BLDG_OFFICES">Commercial Bldg/Offices</option>
+                <option value="COMMERCIAL_LOT">Commercial Lot</option>
+                <option value="COMMERCIAL_SPACES_OFFICES">Commercial Spaces/Offices</option>
+                <option value="DEVELOPMENT_LAND_COMMERCIAL">Development Land (Commercial)</option>
+                <option value="DEVELOPMENT_LAND_RESIDENTIAL">Development Land (Residential)</option>
+                <option value="FACTORY">Factory</option>
+                <option value="FARM_AGRICULTURE">Farm/Agriculture</option>
+                <option value="FRACTIONAL_OWNERSHIP">Fractional Ownership</option>
+                <option value="HOTEL">Hotel</option>
+                <option value="RESIDENTIAL_LOT">Residential Lot</option>
+                <option value="RESORT_APARTMENT">Resort Apartment</option>
+                <option value="RESORT_APARTMENT_VILLA">Resort Apartment/Villa</option>
+                <option value="RESORT_LAND">Resort Land</option>
+                <option value="RETAIL_SPACE">Retail Space</option>
+                <option value="WAREHOUSE">Warehouse</option>
+              </select>
+              {errors.property_type && (
+                <p className="text-red-500 text-sm mt-1">{errors.property_type}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Bedrooms
+              </label>
+              <select
+                name="bedrooms"
+                value={formData.bedrooms}
+                onChange={handleInputChange}
+                className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                  errors.bedrooms ? 'border-red-300' : 'border-gray-300'
+                }`}
+              >
+                <option value="">Select Bedrooms</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4+">4+</option>
+              </select>
+              {errors.bedrooms && (
+                <p className="text-red-500 text-sm mt-1">{errors.bedrooms}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Bathrooms
+              </label>
+              <select
+                name="bathrooms"
+                value={formData.bathrooms}
+                onChange={handleInputChange}
+                className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                  errors.bathrooms ? 'border-red-300' : 'border-gray-300'
+                }`}
+              >
+                <option value="">Select Bathrooms</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4+">4+</option>
+              </select>
+              {errors.bathrooms && (
+                <p className="text-red-500 text-sm mt-1">{errors.bathrooms}</p>
+              )}
+            </div>
           </div>
 
           {/* Price Information */}

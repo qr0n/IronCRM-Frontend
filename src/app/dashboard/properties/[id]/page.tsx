@@ -26,6 +26,9 @@ interface Property {
   parish_name: string;
   listing_type: 'FOR_SALE' | 'FOR_RENT';
   status: string;
+  property_type?: string;
+  bedrooms?: string;
+  bathrooms?: string;
   listing_price: number;
   rental_price: number | null;
   agent: number | null;
@@ -60,7 +63,7 @@ const RENTAL_STATUSES: StatusStep[] = [
   { id: 'LEASED', label: 'Leased', description: 'Tenant moved in and rent active' }
 ];
 
-export default function PropertyProgressPage() {
+function PropertyProgressPage() {
   const params = useParams();
   const router = useRouter();
   const propertyId = params.id as string;
@@ -318,6 +321,30 @@ export default function PropertyProgressPage() {
               </div>
             </div>
 
+            {/* Property Characteristics */}
+            {(property.property_type || property.bedrooms || property.bathrooms) && (
+              <div className="bg-gray-50 rounded-lg p-3">
+                <div className="text-sm font-medium text-gray-700 mb-2">Property Features</div>
+                <div className="flex flex-wrap gap-2">
+                  {property.property_type && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white text-gray-800 border">
+                      {property.property_type.replace(/_/g, ' ').toLowerCase()}
+                    </span>
+                  )}
+                  {property.bedrooms && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      🛏️ {property.bedrooms} bedroom{property.bedrooms !== '1' ? 's' : ''}
+                    </span>
+                  )}
+                  {property.bathrooms && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      🚿 {property.bathrooms} bathroom{property.bathrooms !== '1' ? 's' : ''}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div className="flex items-center space-x-3">
               <CalendarIcon className="h-5 w-5 text-gray-400" />
               <div>
@@ -423,7 +450,7 @@ export default function PropertyProgressPage() {
   );
 }
 
-export function PropertyDetailPage() {
+export default function PropertyDetailPage() {
   return (
     <PermissionGuard allowedRoles={['AGENT', 'MANAGER', 'ADMIN']}>
       <PropertyProgressPage />

@@ -22,6 +22,9 @@ interface PropertySearchParams {
   maxPrice?: number;
   listingType?: 'FOR_SALE' | 'FOR_RENT';
   status?: 'AVAILABLE' | 'SOLD' | 'UNDER_CONTRACT';
+  property_type?: string;
+  bedrooms?: string;
+  bathrooms?: string;
 }
 
 interface PropertySearchBarProps {
@@ -263,6 +266,68 @@ export function PropertySearchBar({
               <option value="UNDER_CONTRACT">Under Contract</option>
               <option value="SOLD">Sold</option>
             </select>
+          </div>
+
+          {/* Property Characteristics Row */}
+          <div className="col-span-full">
+            <div className="border-t border-gray-200 pt-4 mt-4">
+              <h4 className="text-sm font-medium text-gray-700 mb-3">Property Features</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Property Type
+                  </label>
+                  <select
+                    value={filters.property_type || ''}
+                    onChange={(e) => handleFilterChange('property_type', e.target.value || undefined)}
+                    className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">All Types</option>
+                    <option value="APARTMENT">Apartment</option>
+                    <option value="HOUSE">House</option>
+                    <option value="TOWNHOUSE">Townhouse</option>
+                    <option value="STUDIO_APT">Studio Apt</option>
+                    <option value="COMMERCIAL_BLDG_OFFICES">Commercial</option>
+                    <option value="RESIDENTIAL_LOT">Residential Lot</option>
+                    <option value="WAREHOUSE">Warehouse</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Bedrooms
+                  </label>
+                  <select
+                    value={filters.bedrooms || ''}
+                    onChange={(e) => handleFilterChange('bedrooms', e.target.value || undefined)}
+                    className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Any</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4+">4+</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Bathrooms
+                  </label>
+                  <select
+                    value={filters.bathrooms || ''}
+                    onChange={(e) => handleFilterChange('bathrooms', e.target.value || undefined)}
+                    className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Any</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4+">4+</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

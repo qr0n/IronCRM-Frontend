@@ -15,6 +15,9 @@ interface Property {
   parish_name: string;
   listing_type: 'FOR_SALE' | 'FOR_RENT';
   status: string;
+  property_type?: string;
+  bedrooms?: string;
+  bathrooms?: string;
   listing_price: number;
   rental_price: number;
   agent_name: string;
@@ -195,6 +198,27 @@ function PropertiesContent() {
                   {property.listing_type === 'FOR_RENT' && <span className="text-sm">/month</span>}
                 </span>
               </div>
+
+              {/* Property Characteristics */}
+              {(property.property_type || property.bedrooms || property.bathrooms) && (
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {property.property_type && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      {property.property_type.replace(/_/g, ' ').toLowerCase()}
+                    </span>
+                  )}
+                  {property.bedrooms && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      🛏️ {property.bedrooms} bed
+                    </span>
+                  )}
+                  {property.bathrooms && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      🚿 {property.bathrooms} bath
+                    </span>
+                  )}
+                </div>
+              )}
 
               <div className="flex justify-between items-center text-sm text-gray-500 mb-3">
                 <span>Agent: {property.agent_name || 'Unassigned'}</span>

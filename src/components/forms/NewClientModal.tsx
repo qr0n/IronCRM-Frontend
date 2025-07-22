@@ -25,7 +25,7 @@ interface ClientFormData {
   client_name: string;
   email: string;
   phone_number: string;
-  area_of_interest_parish: number | '';
+  areas_of_interest: number[]; // Changed to array for multiple parishes
   area_of_interest_towns: string;
   budget_tier: number | '';
   mode_of_purchase: 'MORTGAGE' | 'CASH' | '';
@@ -37,7 +37,7 @@ export function NewClientModal({ isOpen, onClose, onSuccess, title = "Add New Cl
     client_name: '',
     email: '',
     phone_number: '',
-    area_of_interest_parish: '',
+    areas_of_interest: [], // Changed to empty array
     area_of_interest_towns: '',
     budget_tier: '',
     mode_of_purchase: '',
@@ -109,6 +109,23 @@ export function NewClientModal({ isOpen, onClose, onSuccess, title = "Add New Cl
     return Object.keys(newErrors).length === 0;
   };
 
+  // Helper functions for multi-parish selection
+  const addParish = (parishId: number) => {
+    if (parishId && !formData.areas_of_interest.includes(parishId)) {
+      setFormData(prev => ({
+        ...prev,
+        areas_of_interest: [...prev.areas_of_interest, parishId]
+      }));
+    }
+  };
+
+  const removeParish = (parishId: number) => {
+    setFormData(prev => ({
+      ...prev,
+      areas_of_interest: prev.areas_of_interest.filter(id => id !== parishId)
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -120,7 +137,7 @@ export function NewClientModal({ isOpen, onClose, onSuccess, title = "Add New Cl
     try {
       const submitData = {
         ...formData,
-        area_of_interest_parish: formData.area_of_interest_parish || null,
+        areas_of_interest: formData.areas_of_interest, // Send as array
         budget_tier: formData.budget_tier || null,
         mode_of_purchase: formData.mode_of_purchase || null,
         email: formData.email || null,
@@ -154,7 +171,7 @@ export function NewClientModal({ isOpen, onClose, onSuccess, title = "Add New Cl
       client_name: '',
       email: '',
       phone_number: '',
-      area_of_interest_parish: '',
+      areas_of_interest: [], // Reset to empty array
       area_of_interest_towns: '',
       budget_tier: '',
       mode_of_purchase: '',
@@ -240,22 +257,50 @@ export function NewClientModal({ isOpen, onClose, onSuccess, title = "Add New Cl
             </div>
           </div>
 
-          {/* Area of Interest */}
+          {/* Areas of Interest - Multiple Parish Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Area of Interest - Parish
+              Areas of Interest - Parishes
             </label>
+            
+            {/* Selected Parish Tags */}
+            {formData.areas_of_interest.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {formData.areas_of_interest.map(parishId => {
+                  const parish = parishes.find(p => p.id === parishId);
+                  return parish ? (
+                    <span
+                      key={parishId}
+                      className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+                    >
+                      {parish.name}
+                      <button
+                        type="button"
+                        onClick={() => removeParish(parishId)}
+                        className="ml-2 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ) : null;
+                })}
+              </div>
+            )}
+            
+            {/* Parish Dropdown */}
             <select
-              name="area_of_interest_parish"
-              value={formData.area_of_interest_parish}
-              onChange={handleInputChange}
+              value=""
+              onChange={(e) => addParish(parseInt(e.target.value))}
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select Parish</option>
-              {parishes.map(parish => (
-                <option key={parish.id} value={parish.id}>{parish.name}</option>
-              ))}
+              <option value="">Select Parish to Add</option>
+              {parishes
+                .filter(parish => !formData.areas_of_interest.includes(parish.id))
+                .map(parish => (
+                  <option key={parish.id} value={parish.id}>{parish.name}</option>
+                ))}
             </select>
+            <p className="text-gray-500 text-sm mt-1">Select multiple parishes where the client is interested</p>
           </div>
 
           <div>

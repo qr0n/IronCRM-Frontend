@@ -11,6 +11,9 @@ interface Property {
   parish_name: string;
   listing_type: 'FOR_SALE' | 'FOR_RENT';
   status: string;
+  property_type?: string;
+  bedrooms?: string;
+  bathrooms?: string;
   listing_price: number;
   rental_price: number;
   agent_name: string;
@@ -165,6 +168,35 @@ export default function PropertyDetailModal({ isOpen, onClose, propertyId }: Pro
                       </span>
                     </div>
                   </div>
+
+                  {/* Property Characteristics */}
+                  {(property.property_type || property.bedrooms || property.bathrooms) && (
+                    <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Property Details</h3>
+                      <div className="grid grid-cols-3 gap-4">
+                        {property.property_type && (
+                          <div>
+                            <span className="text-sm font-medium text-gray-500">Type</span>
+                            <p className="text-gray-900 capitalize">
+                              {property.property_type.replace(/_/g, ' ').toLowerCase()}
+                            </p>
+                          </div>
+                        )}
+                        {property.bedrooms && (
+                          <div>
+                            <span className="text-sm font-medium text-gray-500">Bedrooms</span>
+                            <p className="text-gray-900">{property.bedrooms}</p>
+                          </div>
+                        )}
+                        {property.bathrooms && (
+                          <div>
+                            <span className="text-sm font-medium text-gray-500">Bathrooms</span>
+                            <p className="text-gray-900">{property.bathrooms}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="space-y-3">
                     <div className="flex items-center text-gray-700">

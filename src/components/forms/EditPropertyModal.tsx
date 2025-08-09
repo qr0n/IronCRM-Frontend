@@ -56,6 +56,7 @@ interface EditPropertyFormData {
   seller_client: number | '';
   agent: number | '';
   image: File | null;
+  custom_commission_rate: string;  // NEW
 }
 
 interface EditPropertyModalProps {
@@ -78,7 +79,8 @@ export function EditPropertyModal({ isOpen, onClose, onSuccess, property }: Edit
     rental_price: '',
     seller_client: '',
     agent: '',
-    image: null
+    image: null,
+    custom_commission_rate: ''  // NEW
   });
 
   const [parishes, setParishes] = useState<Parish[]>([]);
@@ -103,7 +105,8 @@ export function EditPropertyModal({ isOpen, onClose, onSuccess, property }: Edit
         rental_price: property.rental_price?.toString() || '0',
         seller_client: property.seller_client || '',
         agent: property.agent || '',
-        image: null
+        image: null,
+        custom_commission_rate: (property as any).custom_commission_rate?.toString() || ''  // NEW
       });
       fetchData();
     }
@@ -248,6 +251,11 @@ export function EditPropertyModal({ isOpen, onClose, onSuccess, property }: Edit
       if (formData.image) {
         formDataToSubmit.append('image', formData.image);
       }
+      
+      // Add custom commission settings if provided
+      if (formData.custom_commission_rate) {
+        formDataToSubmit.append('custom_commission_rate', formData.custom_commission_rate);
+      }
 
       await api.patch(`/properties/listings/${property.id}/`, formDataToSubmit, {
         headers: {
@@ -282,7 +290,8 @@ export function EditPropertyModal({ isOpen, onClose, onSuccess, property }: Edit
       rental_price: '',
       seller_client: '',
       agent: '',
-      image: null
+      image: null,
+      custom_commission_rate: ''  // NEW
     });
     setErrors({});
     onClose();
@@ -685,6 +694,35 @@ export function EditPropertyModal({ isOpen, onClose, onSuccess, property }: Edit
               </select>
               {errors.agent && (
                 <p className="text-red-500 text-sm mt-1">{errors.agent}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Custom Commission Settings (Optional) */}
+          <div className="bg-green-50 rounded-lg p-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Custom Commission Settings (Optional)</h3>
+            <p className="text-sm text-gray-600 mb-4">Leave blank to use system default rates</p>
+            
+            <div>
+              <label htmlFor="custom_commission_rate" className="block text-sm font-medium text-gray-700 mb-1">
+                Commission Rate (%)
+              </label>
+              <input
+                type="number"
+                id="custom_commission_rate"
+                name="custom_commission_rate"
+                value={formData.custom_commission_rate}
+                onChange={handleInputChange}
+                step="0.01"
+                min="0"
+                max="100"
+                placeholder="e.g., 2.5"
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  errors.custom_commission_rate ? 'border-red-300' : 'border-gray-300'
+                }`}
+              />
+              {errors.custom_commission_rate && (
+                <p className="text-red-500 text-sm mt-1">{errors.custom_commission_rate}</p>
               )}
             </div>
           </div>

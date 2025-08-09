@@ -22,8 +22,13 @@ interface Client {
   client_name: string;
   email: string;
   phone_number: string;
-  area_of_interest_parish: number;
-  area_of_interest_parish_name: string;
+  client_type?: string;  // NEW
+  moving_reason?: string;  // NEW
+  urgency_level?: number;  // NEW
+  areas_of_interest: number[];  // Updated to match backend
+  areas_of_interest_names?: string[];  // NEW - from serializer
+  area_of_interest_parish?: number;  // Keep for backward compatibility
+  area_of_interest_parish_name?: string;  // Keep for backward compatibility
   area_of_interest_towns: string;
   budget_tier: number;
   budget_tier_name: string;
@@ -259,7 +264,9 @@ function ClientsContent() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {client.area_of_interest_parish_name || 'N/A'}
+                    {client.areas_of_interest_names && client.areas_of_interest_names.length > 0 
+                      ? client.areas_of_interest_names.join(', ') 
+                      : 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {client.budget_tier_name || 'N/A'}

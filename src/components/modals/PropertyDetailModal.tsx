@@ -14,8 +14,11 @@ interface Property {
   property_type?: string;
   bedrooms?: string;
   bathrooms?: string;
+  description?: string;  // NEW
   listing_price: number;
   rental_price: number;
+  custom_commission_rate?: number;  // NEW
+  custom_agent_split?: number;  // NEW
   agent_name: string;
   seller_client_name?: string;
   primary_picture_url: string;
@@ -192,6 +195,35 @@ export default function PropertyDetailModal({ isOpen, onClose, propertyId }: Pro
                           <div>
                             <span className="text-sm font-medium text-gray-500">Bathrooms</span>
                             <p className="text-gray-900">{property.bathrooms}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Property Description */}
+                  {property.description && (
+                    <div className="bg-blue-50 rounded-lg p-4 mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Description</h3>
+                      <p className="text-gray-700 leading-relaxed">{property.description}</p>
+                    </div>
+                  )}
+
+                  {/* Custom Commission Information */}
+                  {(property.custom_commission_rate || property.custom_agent_split) && (
+                    <div className="bg-yellow-50 rounded-lg p-4 mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Custom Commission</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        {property.custom_commission_rate && (
+                          <div>
+                            <span className="text-sm font-medium text-gray-500">Commission Rate</span>
+                            <p className="text-gray-900">{property.custom_commission_rate}%</p>
+                          </div>
+                        )}
+                        {property.custom_agent_split && (
+                          <div>
+                            <span className="text-sm font-medium text-gray-500">Agent Split</span>
+                            <p className="text-gray-900">{property.custom_agent_split}%</p>
                           </div>
                         )}
                       </div>

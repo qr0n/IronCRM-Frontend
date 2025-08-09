@@ -9,6 +9,9 @@ interface Client {
   client_name: string;
   email: string;
   phone_number: string;
+  client_type?: string;  // NEW
+  moving_reason?: string;  // NEW
+  urgency_level?: number;  // NEW
   areas_of_interest: number[]; // Changed to array
   area_of_interest_towns: string;
   budget_tier: number;
@@ -47,6 +50,9 @@ export function EditClientModal({
     client_name: '',
     email: '',
     phone_number: '',
+    client_type: '',  // NEW
+    moving_reason: '',  // NEW
+    urgency_level: 3,  // NEW
     areas_of_interest: [] as number[], // Changed to array
     area_of_interest_towns: '',
     budget_tier: '',
@@ -62,6 +68,9 @@ export function EditClientModal({
         client_name: client.client_name || '',
         email: client.email || '',
         phone_number: client.phone_number || '',
+        client_type: client.client_type || '',  // NEW
+        moving_reason: client.moving_reason || '',  // NEW
+        urgency_level: client.urgency_level || 3,  // NEW
         areas_of_interest: client.areas_of_interest || [], // Initialize as array
         area_of_interest_towns: client.area_of_interest_towns || '',
         budget_tier: client.budget_tier?.toString() || '',
@@ -126,7 +135,7 @@ export function EditClientModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center p-6 border-b">
           <h3 className="text-lg font-medium leading-6 text-gray-900">
             Edit Client
@@ -188,6 +197,70 @@ export function EditClientModal({
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+          </div>
+
+          {/* Client Classification */}
+          <div className="bg-blue-50 rounded-lg p-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Client Classification</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label htmlFor="client_type" className="block text-sm font-medium text-gray-700 mb-1">
+                  Client Type
+                </label>
+                <select
+                  id="client_type"
+                  name="client_type"
+                  value={formData.client_type}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select Client Type</option>
+                  <option value="BUYER">Buyer</option>
+                  <option value="SELLER">Seller</option>
+                  <option value="BOTH">Both</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="moving_reason" className="block text-sm font-medium text-gray-700 mb-1">
+                  Moving Reason
+                </label>
+                <select
+                  id="moving_reason"
+                  name="moving_reason"
+                  value={formData.moving_reason}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select Reason</option>
+                  <option value="UPSIZING">Upsizing</option>
+                  <option value="DOWNSIZING">Downsizing</option>
+                  <option value="RELOCATION">Relocation</option>
+                  <option value="INVESTMENT">Investment</option>
+                  <option value="FIRST_TIME_BUYER">First Time Buyer</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="urgency_level" className="block text-sm font-medium text-gray-700 mb-1">
+                  Urgency Level (1-5)
+                </label>
+                <select
+                  id="urgency_level"
+                  name="urgency_level"
+                  value={formData.urgency_level}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value={1}>1 - Low</option>
+                  <option value={2}>2 - Below Average</option>
+                  <option value={3}>3 - Average</option>
+                  <option value={4}>4 - High</option>
+                  <option value={5}>5 - Urgent</option>
+                </select>
+              </div>
+            </div>
           </div>
 
           <div>

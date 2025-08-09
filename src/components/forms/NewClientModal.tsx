@@ -25,6 +25,9 @@ interface ClientFormData {
   client_name: string;
   email: string;
   phone_number: string;
+  client_type: 'BUYER' | 'SELLER' | 'BOTH' | '';  // NEW
+  moving_reason: 'UPSIZING' | 'DOWNSIZING' | 'RELOCATION' | 'INVESTMENT' | 'FIRST_TIME_BUYER' | 'OTHER' | '';  // NEW
+  urgency_level: number;  // NEW
   areas_of_interest: number[]; // Changed to array for multiple parishes
   area_of_interest_towns: string;
   budget_tier: number | '';
@@ -37,6 +40,9 @@ export function NewClientModal({ isOpen, onClose, onSuccess, title = "Add New Cl
     client_name: '',
     email: '',
     phone_number: '',
+    client_type: '',  // NEW
+    moving_reason: '',  // NEW
+    urgency_level: 3,  // NEW - default middle urgency
     areas_of_interest: [], // Changed to empty array
     area_of_interest_towns: '',
     budget_tier: '',
@@ -142,6 +148,10 @@ export function NewClientModal({ isOpen, onClose, onSuccess, title = "Add New Cl
         mode_of_purchase: formData.mode_of_purchase || null,
         email: formData.email || null,
         phone_number: formData.phone_number || null,
+        // Include new client classification fields
+        client_type: formData.client_type || null,
+        moving_reason: formData.moving_reason || null,
+        urgency_level: formData.urgency_level,
       };
 
       const response = await api.post('/clients/', submitData);
@@ -171,6 +181,9 @@ export function NewClientModal({ isOpen, onClose, onSuccess, title = "Add New Cl
       client_name: '',
       email: '',
       phone_number: '',
+      client_type: '',  // NEW
+      moving_reason: '',  // NEW
+      urgency_level: 3,  // NEW
       areas_of_interest: [], // Reset to empty array
       area_of_interest_towns: '',
       budget_tier: '',
@@ -254,6 +267,82 @@ export function NewClientModal({ isOpen, onClose, onSuccess, title = "Add New Cl
                 className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="876-555-0123"
               />
+            </div>
+          </div>
+
+          {/* Client Classification */}
+          <div className="bg-blue-50 rounded-lg p-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Client Classification</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Client Type *
+                </label>
+                <select
+                  name="client_type"
+                  value={formData.client_type}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                    errors.client_type ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                >
+                  <option value="">Select Client Type</option>
+                  <option value="BUYER">Buyer</option>
+                  <option value="SELLER">Seller</option>
+                  <option value="BOTH">Both</option>
+                </select>
+                {errors.client_type && (
+                  <p className="text-red-500 text-sm mt-1">{errors.client_type}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Moving Reason
+                </label>
+                <select
+                  name="moving_reason"
+                  value={formData.moving_reason}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                    errors.moving_reason ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                >
+                  <option value="">Select Reason</option>
+                  <option value="UPSIZING">Upsizing</option>
+                  <option value="DOWNSIZING">Downsizing</option>
+                  <option value="RELOCATION">Relocation</option>
+                  <option value="INVESTMENT">Investment</option>
+                  <option value="FIRST_TIME_BUYER">First Time Buyer</option>
+                  <option value="OTHER">Other</option>
+                </select>
+                {errors.moving_reason && (
+                  <p className="text-red-500 text-sm mt-1">{errors.moving_reason}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Urgency Level (1-5)
+                </label>
+                <select
+                  name="urgency_level"
+                  value={formData.urgency_level}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                    errors.urgency_level ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                >
+                  <option value={1}>1 - Low</option>
+                  <option value={2}>2 - Below Average</option>
+                  <option value={3}>3 - Average</option>
+                  <option value={4}>4 - High</option>
+                  <option value={5}>5 - Urgent</option>
+                </select>
+                {errors.urgency_level && (
+                  <p className="text-red-500 text-sm mt-1">{errors.urgency_level}</p>
+                )}
+              </div>
             </div>
           </div>
 

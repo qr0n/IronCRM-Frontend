@@ -37,8 +37,11 @@ interface PropertyFormData {
   property_type: string;
   bedrooms: string;
   bathrooms: string;
+  description: string;  // NEW
   listing_price: string;
   rental_price: string;
+  custom_commission_rate: string;  // NEW
+  custom_agent_split: string;  // NEW
   seller_client: number | '';
   agent: number | '';
   image: File | null;
@@ -54,8 +57,11 @@ export function NewPropertyModal({ isOpen, onClose, onSuccess, parishes }: NewPr
     property_type: '',
     bedrooms: '',
     bathrooms: '',
+    description: '',  // NEW
     listing_price: '',
     rental_price: '',
+    custom_commission_rate: '',  // NEW
+    custom_agent_split: '',  // NEW
     seller_client: '',
     agent: '',
     image: null,
@@ -88,7 +94,7 @@ export function NewPropertyModal({ isOpen, onClose, onSuccess, parishes }: NewPr
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -195,6 +201,20 @@ export function NewPropertyModal({ isOpen, onClose, onSuccess, parishes }: NewPr
         formDataToSubmit.append('bathrooms', formData.bathrooms);
       }
       
+      // Add description if provided
+      if (formData.description.trim()) {
+        formDataToSubmit.append('description', formData.description);
+      }
+      
+      // Add custom commission settings if provided
+      if (formData.custom_commission_rate) {
+        formDataToSubmit.append('custom_commission_rate', formData.custom_commission_rate);
+      }
+      
+      if (formData.custom_agent_split) {
+        formDataToSubmit.append('custom_agent_split', formData.custom_agent_split);
+      }
+      
       if (formData.seller_client) {
         formDataToSubmit.append('seller_client', formData.seller_client.toString());
       }
@@ -269,8 +289,11 @@ export function NewPropertyModal({ isOpen, onClose, onSuccess, parishes }: NewPr
       property_type: '',
       bedrooms: '',
       bathrooms: '',
+      description: '',  // NEW
       listing_price: '',
       rental_price: '',
+      custom_commission_rate: '',  // NEW
+      custom_agent_split: '',  // NEW
       seller_client: '',
       agent: '',
       image: null,
@@ -466,6 +489,26 @@ export function NewPropertyModal({ isOpen, onClose, onSuccess, parishes }: NewPr
             </div>
           </div>
 
+          {/* Property Description */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Property Description
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              rows={4}
+              className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                errors.description ? 'border-red-300' : 'border-gray-300'
+              }`}
+              placeholder="Describe the property features, amenities, and highlights..."
+            />
+            {errors.description && (
+              <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+            )}
+          </div>
+
           {/* Price Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {formData.listing_type === 'FOR_SALE' ? (
@@ -509,6 +552,57 @@ export function NewPropertyModal({ isOpen, onClose, onSuccess, parishes }: NewPr
                 )}
               </div>
             )}
+          </div>
+
+          {/* Custom Commission Settings (Optional) */}
+          <div className="bg-yellow-50 rounded-lg p-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Custom Commission Settings (Optional)</h3>
+            <p className="text-sm text-gray-600 mb-4">Leave blank to use system default rates</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Commission Rate (%)
+                </label>
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  max="100"
+                  name="custom_commission_rate"
+                  value={formData.custom_commission_rate}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                    errors.custom_commission_rate ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="3.5"
+                />
+                {errors.custom_commission_rate && (
+                  <p className="text-red-500 text-sm mt-1">{errors.custom_commission_rate}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Agent Split (%)
+                </label>
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  max="100"
+                  name="custom_agent_split"
+                  value={formData.custom_agent_split}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                    errors.custom_agent_split ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="60.0"
+                />
+                {errors.custom_agent_split && (
+                  <p className="text-red-500 text-sm mt-1">{errors.custom_agent_split}</p>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Client and Agent */}

@@ -23,6 +23,9 @@ interface BudgetTier {
 
 interface ClientSearchParams {
   query?: string;
+  nameQuery?: string;
+  emailQuery?: string;
+  phoneQuery?: string;
   parish?: number;
   budgetTier?: number;
   preQualified?: boolean;
@@ -46,13 +49,27 @@ export function ClientSearchBar({
   const [query, setQuery] = useState('');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [filters, setFilters] = useState<Omit<ClientSearchParams, 'query'>>({});
-  const [searchType, setSearchType] = useState<'all' | 'name' | 'email' | 'phone'>('all');
+  const [searchType, setSearchType] = useState<'name' | 'email' | 'phone'>('name');
 
   const handleSearch = () => {
     const searchParams: ClientSearchParams = {
-      query: query.trim() || undefined,
       ...filters
     };
+    
+    // Add field-specific search based on searchType
+    if (query.trim()) {
+      switch (searchType) {
+        case 'name':
+          searchParams.nameQuery = query.trim();
+          break;
+        case 'email':
+          searchParams.emailQuery = query.trim();
+          break;
+        case 'phone':
+          searchParams.phoneQuery = query.trim();
+          break;
+      }
+    }
     
     onSearch(searchParams);
   };
@@ -126,7 +143,6 @@ export function ClientSearchBar({
           onChange={(e) => setSearchType(e.target.value as any)}
           className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
         >
-          <option value="all">All Fields</option>
           <option value="name">Name Only</option>
           <option value="email">Email Only</option>
           <option value="phone">Phone Only</option>

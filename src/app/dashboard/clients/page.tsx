@@ -40,6 +40,9 @@ interface Client {
 
 interface ClientSearchParams {
   query?: string;
+  nameQuery?: string;
+  emailQuery?: string;
+  phoneQuery?: string;
   parish?: number;
   budgetTier?: number;
   preQualified?: boolean;
@@ -78,13 +81,17 @@ function ClientsContent() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
   const handleSearch = (params: ClientSearchParams) => {
+    console.log('Client search triggered with params:', params);
     setSearchParams(params);
     fetchClients(params);
   };
 
   const fetchClientsOnly = async (searchParams?: ClientSearchParams) => {
     try {
+      console.log('Fetching clients with params:', searchParams);
       const response = await api.get('/clients/', { params: searchParams });
+      console.log('Client API response:', response.data);
+      console.log('Setting clients count:', response.data?.length);
       setClients(response.data);
       setFilteredClients(response.data);
     } catch (error) {
